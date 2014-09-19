@@ -2,12 +2,11 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>CameronAPIClient</groupId>
-	<artifactId>CameronAPIClient</artifactId>
+	<artifactId>FIXAppTester</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>CameronAPIClient</name>
+	<name>FIXAppTester</name>
 	<url>http://maven.apache.org</url>
 
 	<properties>
@@ -45,16 +44,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.quickfixj</groupId>
-			<artifactId>quickfixj-all</artifactId>
-			<version>1.5.3</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>cameron</groupId>
-			<artifactId>fix-application-server-unbundled</artifactId>
-			<version>6.5</version>
+			<groupId>org.apache.servicemix.bundles</groupId>
+			<artifactId>org.apache.servicemix.bundles.quickfix</artifactId>
+			<version>1.5.3_1</version>
 		</dependency>
 	</dependencies>
 	<build>
@@ -88,4 +80,5 @@
 			</plugin>
 		</plugins>
 	</build>
+	<groupId>tradingfun</groupId>
 </project>
