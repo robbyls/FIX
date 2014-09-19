@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <appender name="LOGFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+  	<append>true</append>
+    <file>log/APITest_${xn}.log</file>
+    <encoder>
+      <pattern>%d [%t] %-5p %c - %m%n</pattern>
+    </encoder>
+	<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+		<!-- rollover daily -->
+		<FileNamePattern>log/APITest_${xn}.log-%d{yyyy-MM-dd}_%i.gz</FileNamePattern>
+		<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+		<!-- or whenever the file size reaches xxMB -->
+		<maxFileSize>200MB</maxFileSize>
+		</timeBasedFileNamingAndTriggeringPolicy>
+		<maxHistory>7</maxHistory>
+	</rollingPolicy>
+  </appender>
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d [%t] %-5p %c - %m%n</pattern>
+    </encoder>
+  </appender>
+  <logger name="com.tdsecurities.api.test.TestCase" additivity="false">
+    <level value="DEBUG"/>
+    <appender-ref ref="LOGFILE"/>
+    <appender-ref ref="STDOUT"/>
+  </logger>
+  <root>
+  	<level value="INFO"/>
+  	<appender-ref ref="LOGFILE"/>
+  	<appender-ref ref="STDOUT"/>
+  </root>
+</configuration>

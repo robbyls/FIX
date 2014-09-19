@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
+        p:ignoreResourceNotFound="true" p:localOverride="true">
+        <property name="locations">
+            <list>
+                <value>classpath:${api.properies.file}</value>
+            </list>
+        </property>
+    </bean>
+
+	<bean id="exporter" class="org.springframework.jmx.export.MBeanExporter">
+	  <property name="beans">
+	    <map>
+	      <entry key="bean:name=APIClient" value-ref="testClient"/>
+	    </map>
+	  </property>
+	</bean>
+	
+	<bean id="scheduler" class="java.util.concurrent.ScheduledThreadPoolExecutor">
+		<constructor-arg type="int" value="8"/>
+	</bean>
+  
+	<!-- test steps -->
+	<bean id="step_request"
+		class="com.tdsecurities.api.test.FIXMessage" scope="prototype">
+		<property name="msgTemplate" value="${QuoteRequest}"/>
+		<property name="deplay" value="1000"/>
+		<property name="repeat" value="0"/>
+		<property name="delimeter" value="${delimeter}"/>
+	</bean>
+
+	<bean id="step_deal"
+		class="com.tdsecurities.api.test.FIXMessage" scope="prototype">
+		<property name="msgTemplate" value="${OrderSingle}"/>
+		<property name="deplay" value="5000"/>
+		<property name="repeat" value="10"/>
+		<property name="delimeter" value="${delimeter}"/>
+	</bean>
+	
+	
+	<bean id="step_cancel"
+		class="com.tdsecurities.api.test.FIXMessage" scope="prototype">
+		<property name="msgTemplate" value="${QuoteCancel}"/>
+		<property name="deplay" value="5000"/>
+		<property name="repeat" value="0"/>
+		<property name="delimeter" value="${delimeter}"/>
+	</bean>
+	
+	<bean id="testCase1"
+		class="com.tdsecurities.api.test.TestCase">
+		<property name="scheduler" ref="scheduler"/>
+		<property name="adaoptor" ref="socketAdaptor"/>
+		<property name="idPrefix" value="L1_TEST1"/>
+		<property name="repeat"  value="9"/>
+		<property name="apiClient" ref="testClient" />
+		<property name="orderIdTag" value="11" />
+		
+		<property name="messageList">
+			<list>
+				<ref bean="step_request"/>
+				<ref bean="step_deal"/>
+				<ref bean="step_cancel"/>
+			</list>
+		</property>
+		
+		<property name="parameterMap">
+			<map>
+				<entry key="account" value="BKNAMAI"/>
+				<entry key="symbol" value="USD/CAD/SPOT"/>
+				<entry key="qty" value="3000000"/>
+				<entry key="tradingcurrency" value="CAD"/>
+			</map>
+		</property>
+	</bean>
+	
+	
+	<bean id="testCase2"
+		class="com.tdsecurities.api.test.TestCase">
+		<property name="scheduler" ref="scheduler"/>
+		<property name="adaoptor" ref="socketAdaptor"/>
+		<property name="idPrefix" value="L1_TEST2"/>
+		<property name="repeat"  value="20"/>
+		<property name="apiClient" ref="testClient" />
+		<property name="orderIdTag" value="11" />
+		
+		<property name="messageList">
+			<list>
+				<ref bean="step_request"/>
+				<ref bean="step_deal"/>
+				<ref bean="step_cancel"/>
+			</list>
+		</property>
+		
+		<property name="parameterMap">
+			<map>
+				<entry key="account" value="BKNAMAI"/>
+				<entry key="symbol" value="USD/CAD/1M"/>
+				<entry key="qty" value="3000000"/>
+				<entry key="tradingcurrency" value="USD"/>
+			</map>
+		</property>
+	</bean>
+
+	<bean id="testClient"
+		class="com.tdsecurities.api.test.APIClient">
+		<property name="scheduler" ref="scheduler"/>
+		<property name="logonMsg" value="${Logon}"/>
+		<property name="logOutMsg" value="${Logout}"/>
+		<property name="delimeter" value="${delimeter}"/>
+		<property name="adaptor" ref="socketAdaptor"/>
+		
+		<property name="testCaseList">
+			<list>
+				<ref bean="testCase1"/>
+			</list>
+		</property>
+		
+		<property name="parameterMap">
+			<map/>
+		</property>
+	</bean>
+
+	<bean id="socketAdaptor"
+		class="com.tdsecurities.api.test.SocketAdaptor">
+		<constructor-arg type="java.lang.String" value="${cameron_host}"/>
+		<constructor-arg type="int" value="${cameron_port}"/>
+	</bean>
+	
+
+</beans>
